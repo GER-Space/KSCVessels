@@ -21,22 +21,23 @@ namespace KSCVessels
 
         new public void Start()
         {
+            // only work in the spaceCenter Scene
             if (HighLogic.LoadedScene != GameScenes.SPACECENTER)
             { 
                 return;
             }
 
-
+            // ignore asteroids and other spaceObjects
             if (vessel.vesselType == VesselType.SpaceObject || vessel.vesselType == VesselType.Unknown)
             {
                 return;
             }
-            //Log.Normal("start called on: " + this.vessel.name);
-            //Log.Normal("RootPartindex: " + rootIdx);
+            // fetch the SpaceCenterCam only once
             if (spaceCenterCam == null)
             {
                 spaceCenterCam = Resources.FindObjectsOfTypeAll<SpaceCenterCamera2>().FirstOrDefault();
             }
+            // only load vessels that are near
             if (Vector3.Distance(vessel.transform.position, spaceCenterCam.transform.position) < 8000)
             {
                 LoadRootPart();
@@ -73,7 +74,9 @@ namespace KSCVessels
             }
         }
 
-
+        /// <summary>
+        /// remove parts when a vessel is recovered
+        /// </summary>
         public void OnDestroy()
         {
             foreach (GameObject obj in allObjects)
